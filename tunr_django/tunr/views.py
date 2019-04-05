@@ -1,9 +1,29 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from .models import Artist, Song
 from .forms import ArtistForm
 from .forms import SongForm
 
 # Create your views here.
+
+# Log-in function
+
+
+def sign_up(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('artist_index')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
 
 # Artist Functions
 
@@ -18,6 +38,7 @@ def artist_show(request, pk):
     return render(request, 'tunr/artist_show.html', context)
 
 
+@login_required
 def artist_new(request):
     if request.method == 'POST':
         form = ArtistForm(request.POST)
@@ -29,6 +50,7 @@ def artist_new(request):
     return render(request, 'tunr/artist_form.html', {'form': form})
 
 
+@login_required
 def artist_edit(request, pk):
     artist = Artist.objects.get(pk=pk)
     if request.method == "POST":
@@ -41,6 +63,7 @@ def artist_edit(request, pk):
     return render(request, 'tunr/artist_form.html', {'form': form})
 
 
+@login_required
 def artist_delete(request, pk):
     Artist.objects.get(pk=pk).delete()
     return redirect('artist_index')
@@ -58,6 +81,7 @@ def song_show(request, pk):
     return render(request, 'tunr/song_show.html', context)
 
 
+@login_required
 def song_new(request):
     if request.method == 'POST':
         form = SongForm(request.POST)
@@ -69,6 +93,7 @@ def song_new(request):
     return render(request, 'tunr/song_form.html', {'form': form})
 
 
+@login_required
 def song_edit(request, pk):
     song = Song.objects.get(pk=pk)
     if request.method == 'POST':
@@ -81,6 +106,7 @@ def song_edit(request, pk):
     return render(request, 'tunr/song_form.html', {'form': form})
 
 
+@login_required
 def song_delete(request, pk):
     Song.objects.get(pk=pk).delete()
     return redirect('song_index')
