@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Artist, Song
 from .forms import ArtistForm
+from .forms import SongForm
 
 # Create your views here.
 
@@ -38,3 +39,14 @@ def song_index(request):
 def song_show(request, pk):
     context = {'song': Song.objects.get(pk=pk)}
     return render(request, 'tunr/song_show.html', context)
+
+
+def song_new(request):
+    if request.method == 'POST':
+        form = SongForm(request.POST)
+        if form.is_valid():
+            song = form.save()
+            return redirect('song_index')
+    else:
+        form = SongForm()
+    return render(request, 'tunr/song_form.html', {'form': form})
