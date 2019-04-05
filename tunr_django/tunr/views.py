@@ -17,3 +17,8 @@ def artist_show(request, pk):
 def song_index(request):
     context = {'songs': Song.objects.all()}
     return render(request, 'tunr/song_index.html', context)
+
+
+def song_show(request, pk):
+    context = {'song': Song.objects.get(pk=pk)}
+    return render(request, 'tunr/song_show.html', context)
