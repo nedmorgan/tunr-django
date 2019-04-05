@@ -62,3 +62,15 @@ def song_new(request):
     else:
         form = SongForm()
     return render(request, 'tunr/song_form.html', {'form': form})
+
+
+def song_edit(request, pk):
+    song = Song.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = SongForm(request.POST, instance=song)
+        if form.is_valid():
+            song = form.save()
+            return redirect('song_show', pk=song.pk)
+    else:
+        form = SongForm(instance=song)
+    return render(request, 'tunr/song_form.html', {'form': form})
