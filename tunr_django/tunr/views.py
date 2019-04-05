@@ -40,6 +40,11 @@ def artist_edit(request, pk):
         form = ArtistForm(instance=artist)
     return render(request, 'tunr/artist_form.html', {'form': form})
 
+
+def artist_delete(request, pk):
+    Artist.objects.get(pk=pk).delete()
+    return redirect('artist_index')
+
 # Song Functions
 
 
@@ -74,3 +79,8 @@ def song_edit(request, pk):
     else:
         form = SongForm(instance=song)
     return render(request, 'tunr/song_form.html', {'form': form})
+
+
+def song_delete(request, pk):
+    Song.objects.get(pk=pk).delete()
+    return redirect('song_index')
