@@ -28,6 +28,18 @@ def artist_new(request):
         form = ArtistForm()
     return render(request, 'tunr/artist_form.html', {'form': form})
 
+
+def artist_edit(request, pk):
+    artist = Artist.objects.get(pk=pk)
+    if request.method == "POST":
+        form = ArtistForm(request.POST, instance=artist)
+        if form.is_valid():
+            artist = form.save()
+            return redirect('artist_show', pk=artist.pk)
+    else:
+        form = ArtistForm(instance=artist)
+    return render(request, 'tunr/artist_form.html', {'form': form})
+
 # Song Functions
 
 
